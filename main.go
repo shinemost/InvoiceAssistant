@@ -15,7 +15,12 @@ import (
 func main() {
 
 	logger, _ := zap.NewDevelopment()
-	defer logger.Sync()
+	defer func(logger *zap.Logger) {
+		err := logger.Sync()
+		if err != nil {
+			logger.Error("启动zap日志报错")
+		}
+	}(logger)
 
 	conn := gin.New()
 
@@ -52,6 +57,6 @@ func main() {
 			})
 		})
 	}
-	conn.Run(":8080")
+	conn.Run(":8188")
 
 }
